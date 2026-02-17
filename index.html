@@ -302,6 +302,25 @@ footer p{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);
   .cv-sh{color:#4285F4;border-bottom:1px solid #ddd;}
   .cv-role{color:#4285F4;}
 }
+
+.cv-modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:10000;}
+.cv-modal-content{background:var(--surface);border:1px solid var(--border);border-radius:8px;max-width:90%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.8);}
+.cv-modal-header{padding:1.5rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.cv-modal-header h2{margin:0;font-size:1.3rem;color:var(--accent);font-weight:700;}
+.cv-modal-close{background:transparent;border:none;color:var(--muted2);font-size:1.5rem;cursor:pointer;}
+.cv-modal-close:hover{color:var(--accent);}
+.cv-modal-body{flex:1;overflow-y:auto;padding:2rem;background:var(--surface);font-family:Arial,sans-serif;font-size:.9rem;color:#333;line-height:1.6;}
+.cv-modal-body h1{font-size:1.8rem;text-align:center;margin:0 0 .5rem 0;color:#000;}
+.cv-modal-body h2{font-size:1rem;font-weight:bold;color:#2962b6;border-bottom:1px solid #ddd;margin:1rem 0 .5rem 0;}
+.cv-modal-body h3{font-size:.95rem;font-weight:bold;margin:.5rem 0 .3rem 0;}
+.cv-modal-body p{margin:.3rem 0;}
+.cv-modal-footer{padding:1.5rem;border-top:1px solid var(--border);display:flex;gap:1rem;justify-content:flex-end;background:var(--card);}
+.cv-modal-btn{padding:.6rem 1.5rem;border-radius:4px;border:none;font-weight:600;cursor:pointer;}
+.cv-modal-btn-download{background:var(--accent);color:#000;}
+.cv-modal-btn-download:hover{background:#fff;}
+.cv-modal-btn-close{background:var(--border2);color:var(--text);}
+.cv-modal-btn-close:hover{background:var(--border);}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -1274,6 +1293,101 @@ function downloadATSPDF(){
   // Save PDF
   doc.save('Emmanuel_Tar_Professional_CV_ATS.pdf');
 }
+
+/* CV PREVIEW MODAL FUNCTIONS */
+function previewCVModal(){
+  const cvContent = `
+    <h1>EMMANUEL TAR</h1>
+    <p style="text-align:center;color:#2962b6;margin:.3rem 0;">IT Support Officer | Software Support Analyst | Technical Support Engineer</p>
+    <p style="text-align:center;">Victoria Island, Lagos, Nigeria | +234 807 912 6123 | emmanueltar14@gmail.com | linkedin.com/in/emmanueltar</p>
+    
+    <h2>PROFESSIONAL SUMMARY</h2>
+    <p>Technical Support Specialist with 3+ years of proven expertise diagnosing and resolving complex full-stack software, hardware, USB, and network issues. Demonstrated success implementing systematic troubleshooting methodologies across Windows and macOS environments.</p>
+    
+    <h2>KEY ACHIEVEMENTS</h2>
+    <ul>
+      <li>Resolved 95%+ of critical escalated issues on first contact, reducing ticket escalation rates significantly</li>
+      <li>Implemented structured troubleshooting framework reducing average resolution time by 35%</li>
+      <li>Authored 50+ detailed technical documentation files, improving team efficiency by 40%</li>
+      <li>Identified and reported 25+ critical product defects, leading to 18 engineering prioritized fixes</li>
+      <li>Managed 200+ monthly support tickets with 98% first-contact resolution rate</li>
+      <li>Trained 8+ new team members on technical troubleshooting methodologies and company processes</li>
+    </ul>
+    
+    <h2>CORE COMPETENCIES</h2>
+    <p>Full-Stack Troubleshooting • USB Device Diagnostics • Network Connectivity • Root Cause Analysis • Incident Management • Cloud/On-Premises Sync • Firmware Workflows • Hardware Provisioning • SQL (MySQL) • Windows & macOS Admin • Python (Foundational) • JavaScript (Foundational) • Jira & Zendesk • Packet Analysis • Logging & Debugging</p>
+    
+    <h2>PROFESSIONAL EXPERIENCE</h2>
+    <h3>Software Support Analyst</h3>
+    <p style="color:#666;"><strong>Yanot Ltd</strong> | February 2022 – Present</p>
+    <ul>
+      <li>Primary escalation point for complex software, hardware, and network issues across full stack</li>
+      <li>Expert USB diagnostics: resolve device detection, driver conflicts, and firmware compatibility issues</li>
+      <li>Support complete USB workflows including device provisioning, firmware updates, and data extraction</li>
+      <li>Diagnose network connectivity (Wi-Fi/Ethernet), DHCP conflicts, firewall restrictions</li>
+      <li>Analyze cloud/on-premises synchronization issues using logs and network diagnostics</li>
+      <li>Collaborate with product and engineering teams on defect reporting and product improvements</li>
+      <li>Support software release cycles including validation, documentation, and deployment</li>
+    </ul>
+    
+    <h3>IT Support Analyst</h3>
+    <p style="color:#666;"><strong>PosShop Ltd</strong> | February 2020 – January 2022</p>
+    <ul>
+      <li>Diagnosed hardware, software, and network issues across distributed retail POS environment</li>
+      <li>Managed device provisioning, OS updates, and maintenance supporting 150+ endpoints</li>
+      <li>Maintained 99.2% system uptime and 92% customer satisfaction ratings</li>
+      <li>Processed 100+ monthly support tickets with 98% closure rate within SLA targets</li>
+      <li>Collaborated with IT, engineering, and operations teams to prevent recurring issues</li>
+    </ul>
+    
+    <h2>EDUCATION</h2>
+    <p><strong>B.Sc. Computer Science</strong> | Kwame Nkrumah University of Science and Technology (KNUST), Kumasi, Ghana | 2013-2018</p>
+    
+    <h2>CERTIFICATIONS & PROFESSIONAL DEVELOPMENT</h2>
+    <ul>
+      <li>CompTIA A+ Certified (2021)</li>
+      <li>ITIL Foundation – Incident & Problem Management (2022)</li>
+      <li>Google Advanced Data Analytics Professional Certificate (2023)</li>
+      <li>Cisco Data Science Certification (2024)</li>
+    </ul>
+    
+    <h2>TECHNICAL SKILLS & TOOLS</h2>
+    <p><strong>Programming Languages:</strong> Python (foundational), JavaScript (foundational), Bash scripting</p>
+    <p><strong>Database Management:</strong> MySQL, SQL queries (SELECT, UPDATE, DELETE, JOIN), database optimization</p>
+    <p><strong>Operating Systems:</strong> Windows XP/7/10/11, macOS Monterey/Ventura, basic Linux administration</p>
+    <p><strong>Networking:</strong> DHCP, IP configuration, VPN, Wi-Fi/Ethernet troubleshooting, packet analysis</p>
+    <p><strong>Hardware:</strong> USB diagnostics, firmware updates, BIOS/UEFI, device provisioning, power delivery</p>
+    <p><strong>Support Tools:</strong> Jira, Zendesk, Slack, Microsoft Teams, Confluence, system diagnostics tools</p>
+    
+    <h2>PROFESSIONAL STRENGTHS</h2>
+    <ul>
+      <li>Exceptional analytical and structured problem-solving abilities with systematic troubleshooting approach</li>
+      <li>Clear technical communication skills and meticulous technical documentation</li>
+      <li>Full ownership mentality with commitment to end-to-end issue resolution</li>
+      <li>Collaborative team player across engineering, QA, product, and customer-facing teams</li>
+      <li>Quick learner and adaptable in fast-paced, evolving environments</li>
+      <li>Strong attention to detail with excellent knowledge sharing practices</li>
+    </ul>
+    
+    <p style="text-align:center;margin-top:2rem;color:#999;font-size:.9rem;">References available upon request | ATS-Compliant Professional Resume</p>
+  `;
+  
+  document.getElementById('cvPreviewContent').innerHTML = cvContent;
+  document.getElementById('cvModal').style.display = 'flex';
+}
+
+function closeCVModal(){
+  document.getElementById('cvModal').style.display = 'none';
+}
+
+// Close modal when clicking outside content
+document.addEventListener('click', function(event) {
+  const modal = document.getElementById('cvModal');
+  if (event.target === modal) {
+    closeCVModal();
+  }
+});
+
 </script>
 </body>
 </html>
