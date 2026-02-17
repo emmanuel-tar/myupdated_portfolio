@@ -303,6 +303,8 @@ footer p{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);
   .cv-role{color:#4285F4;}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -647,7 +649,7 @@ footer p{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);
       <div class="cv-bar-dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
       <div class="cv-bar-title">Emmanuel_Tar_IT_CV — 2025</div>
       <div class="cv-bar-btns">
-        <button class="cvb" onclick="window.print()">⎙ Print / Save PDF</button>
+        <button class="cvb" onclick="previewCVModal()">👁 Preview & Download PDF</button>
         <a class="cvb" href="mailto:emmanueltar14@gmail.com?subject=Resume Request&body=Hi Emmanuel, I'd like to request your resume.">✉ Request Copy</a>
       </div>
     </div>
@@ -723,6 +725,21 @@ footer p{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);
     <a href="mailto:emmanueltar14@gmail.com" class="btn btn-p" style="font-size:.75rem;padding:.85rem 2rem;">Send Me a Message →</a>
   </div>
 </section>
+
+<!-- ═══ CV PREVIEW MODAL ═══ -->
+<div id="cvModal" class="cv-modal" style="display:none;">
+  <div class="cv-modal-content">
+    <div class="cv-modal-header">
+      <h2>CV Preview</h2>
+      <button class="cv-modal-close" onclick="closeCVModal()">✕</button>
+    </div>
+    <div class="cv-modal-body" id="cvPreviewContent"></div>
+    <div class="cv-modal-footer">
+      <button class="cv-modal-btn cv-modal-btn-download" onclick="downloadATSPDF()">⬇ Download PDF</button>
+      <button class="cv-modal-btn cv-modal-btn-close" onclick="closeCVModal()">Close</button>
+    </div>
+  </div>
+</div>
 
 <footer>
   <p>© 2025 Emmanuel Tar — Technical Support Engineer</p>
@@ -905,6 +922,357 @@ function copyPhone(){
     const t=document.getElementById('copyToast');
     t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
   });
+}
+
+/* ═══ PROFESSIONAL ATS-FRIENDLY PDF DOWNLOAD ═══ */
+function downloadATSPDF(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4'
+  });
+  
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 12;
+  const contentWidth = pageWidth - 2 * margin;
+  let yPos = margin;
+  
+  // Colors
+  const accentColor = [41, 98, 182];
+  const darkGray = [40, 40, 40];
+  const lightGray = [120, 120, 120];
+  
+  function addPage() {
+    doc.addPage();
+    yPos = margin;
+  }
+  
+  function checkPageBreak(space = 15) {
+    if (yPos + space > pageHeight - margin) {
+      addPage();
+    }
+  }
+  
+  // HEADER
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(20);
+  doc.setTextColor(...darkGray);
+  doc.text('EMMANUEL TAR', margin, yPos);
+  yPos += 10;
+  
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(...accentColor);
+  doc.text('IT Support Officer | Software Support Analyst | Technical Support Engineer', margin, yPos);
+  yPos += 8;
+  
+  doc.setDrawColor(...accentColor);
+  doc.setLineWidth(0.5);
+  doc.line(margin, yPos, pageWidth - margin, yPos);
+  yPos += 6;
+  
+  // Contact info
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...darkGray);
+  const contact = 'Victoria Island, Lagos, Nigeria | +234 807 912 6123 | emmanueltar14@gmail.com | linkedin.com/in/emmanueltar';
+  doc.text(contact, margin, yPos, { maxWidth: contentWidth, align: 'center' });
+  yPos += 7;
+  
+  // PROFESSIONAL SUMMARY
+  checkPageBreak(20);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...accentColor);
+  doc.text('PROFESSIONAL SUMMARY', margin, yPos);
+  yPos += 6;
+  
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...darkGray);
+  const summary = 'Technical Support Specialist with 3+ years of proven expertise diagnosing and resolving complex full-stack software, hardware, USB, and network issues. Demonstrated success implementing systematic troubleshooting methodologies across Windows and macOS environments. Skilled at conducting root cause analysis, identifying recurring patterns, and collaborating with engineering teams to drive continuous product improvements and system reliability.';
+  const summaryLines = doc.splitTextToSize(summary, contentWidth);
+  doc.text(summaryLines, margin, yPos);
+  yPos += summaryLines.length * 4.5 + 5;
+  
+  // KEY ACHIEVEMENTS
+  checkPageBreak(25);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...accentColor);
+  doc.text('KEY ACHIEVEMENTS', margin, yPos);
+  yPos += 6;
+  
+  const achievements = [
+    'Resolved 95%+ of critical escalated issues on first contact, reducing ticket escalation rates significantly',
+    'Implemented structured troubleshooting framework reducing average resolution time by 35%',
+    'Authored 50+ detailed technical documentation files, improving team efficiency by 40%',
+    'Identified and reported 25+ critical product defects, leading to 18 engineering prioritized fixes',
+    'Managed 200+ monthly support tickets with 98% first-contact resolution rate',
+    'Trained 8+ new team members on technical troubleshooting methodologies and company processes'
+  ];
+  
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...darkGray);
+  
+  achievements.forEach(achievement => {
+    checkPageBreak(8);
+    const lines = doc.splitTextToSize(achievement, contentWidth - 3);
+    const lineCount = lines.length;
+    
+    doc.text('• ', margin, yPos);
+    doc.text(lines, margin + 3, yPos);
+    yPos += lineCount * 4.2 + 2;
+  });
+  
+  yPos += 3;
+  
+  // CORE COMPETENCIES
+  checkPageBreak(15);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...accentColor);
+  doc.text('CORE COMPETENCIES', margin, yPos);
+  yPos += 6;
+  
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...darkGray);
+  
+  const competencies = [
+    'Full-Stack Troubleshooting', 'USB Device Diagnostics', 'Network Connectivity',
+    'Root Cause Analysis', 'Incident Management', 'Cloud/On-Premises Sync',
+    'Firmware Workflows', 'Hardware Provisioning', 'SQL (MySQL)',
+    'Windows & macOS Admin', 'Python (Foundational)', 'JavaScript (Foundational)',
+    'Jira & Zendesk', 'Packet Analysis', 'Logging & Debugging'
+  ];
+  
+  let compIndex = 0;
+  let currentLine = '';
+  
+  competencies.forEach((comp, idx) => {
+    if (currentLine.length + comp.length + 4 > 60) {
+      const lines = doc.splitTextToSize(currentLine, contentWidth);
+      doc.text(lines, margin, yPos);
+      yPos += 4.5;
+      currentLine = '• ' + comp;
+    } else {
+      currentLine += (currentLine ? ' • ' : '• ') + comp;
+    }
+  });
+  
+  if (currentLine) {
+    const lines = doc.splitTextToSize(currentLine, contentWidth);
+    doc.text(lines, margin, yPos);
+    yPos += lines.length * 4.5 + 3;
+  }
+  
+  // PROFESSIONAL EXPERIENCE
+  checkPageBreak(20);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...accentColor);
+  doc.text('PROFESSIONAL EXPERIENCE', margin, yPos);
+  yPos += 6;
+  
+  // Job 1
+  checkPageBreak(15);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(...darkGray);
+  doc.text('Software Support Analyst', margin, yPos);
+  yPos += 5;
+  
+  doc.setFont('Helvetica', 'italic');
+  doc.setFontSize(9);
+  doc.setTextColor(...lightGray);
+  doc.text('Yanot Ltd | February 2022 – Present', margin, yPos);
+  yPos += 5;
+  
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...darkGray);
+  
+  const ynotBullets = [
+    'Primary escalation point for complex software, hardware, and network issues across full stack',
+    'Expert USB diagnostics: resolve device detection, driver conflicts, and firmware compatibility issues',
+    'Support complete USB workflows including device provisioning, firmware updates, and data extraction',
+    'Diagnose network connectivity (Wi-Fi/Ethernet), DHCP conflicts, firewall restrictions',
+    'Analyze cloud/on-premises synchronization issues using logs and network diagnostics',
+    'Collaborate with product and engineering teams on defect reporting and product improvements',
+    'Support software release cycles including validation, documentation, and deployment'
+  ];
+  
+  ynotBullets.forEach(bullet => {
+    checkPageBreak(8);
+    const lines = doc.splitTextToSize(bullet, contentWidth - 3);
+    doc.text('• ', margin, yPos);
+    doc.text(lines, margin + 3, yPos);
+    yPos += lines.length * 4.2 + 1.5;
+  });
+  
+  yPos += 2;
+  
+  // Job 2
+  checkPageBreak(15);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(10);
+  doc.setTextColor(...darkGray);
+  doc.text('IT Support Analyst', margin, yPos);
+  yPos += 5;
+  
+  doc.setFont('Helvetica', 'italic');
+  doc.setFontSize(9);
+  doc.setTextColor(...lightGray);
+  doc.text('PosShop Ltd | February 2020 – January 2022', margin, yPos);
+  yPos += 5;
+  
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...darkGray);
+  
+  const posShopBullets = [
+    'Diagnosed hardware, software, and network issues across distributed retail POS environment',
+    'Managed device provisioning, OS updates, and maintenance supporting 150+ endpoints',
+    'Maintained 99.2% system uptime and 92% customer satisfaction ratings',
+    'Processed 100+ monthly support tickets with 98% closure rate within SLA targets',
+    'Collaborated with IT, engineering, and operations teams to prevent recurring issues'
+  ];
+  
+  posShopBullets.forEach(bullet => {
+    checkPageBreak(8);
+    const lines = doc.splitTextToSize(bullet, contentWidth - 3);
+    doc.text('• ', margin, yPos);
+    doc.text(lines, margin + 3, yPos);
+    yPos += lines.length * 4.2 + 1.5;
+  });
+  
+  yPos += 3;
+  
+  // EDUCATION
+  checkPageBreak(12);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...accentColor);
+  doc.text('EDUCATION', margin, yPos);
+  yPos += 6;
+  
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(...darkGray);
+  doc.text('B.Sc. Computer Science', margin, yPos);
+  yPos += 5;
+  
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...lightGray);
+  doc.text('Kwame Nkrumah University of Science and Technology (KNUST), Kumasi, Ghana | 2013-2018', margin, yPos);
+  yPos += 7;
+  
+  // CERTIFICATIONS
+  checkPageBreak(15);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...accentColor);
+  doc.text('CERTIFICATIONS & PROFESSIONAL DEVELOPMENT', margin, yPos);
+  yPos += 6;
+  
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...darkGray);
+  
+  const certs = [
+    'CompTIA A+ Certified (2021)',
+    'ITIL Foundation – Incident & Problem Management (2022)',
+    'Google Advanced Data Analytics Professional Certificate (2023)',
+    'Cisco Data Science Certification (2024)'
+  ];
+  
+  certs.forEach(cert => {
+    doc.text('• ' + cert, margin, yPos);
+    yPos += 5;
+  });
+  
+  yPos += 2;
+  
+  // TECHNICAL SKILLS
+  checkPageBreak(20);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...accentColor);
+  doc.text('TECHNICAL SKILLS & TOOLS', margin, yPos);
+  yPos += 6;
+  
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  
+  const skills = [
+    { category: 'Programming Languages', items: 'Python (foundational), JavaScript (foundational), Bash scripting' },
+    { category: 'Database Management', items: 'MySQL, SQL queries (SELECT, UPDATE, DELETE, JOIN), database optimization' },
+    { category: 'Operating Systems', items: 'Windows XP/7/10/11, macOS Monterey/Ventura, basic Linux administration' },
+    { category: 'Networking', items: 'DHCP, IP configuration, VPN, Wi-Fi/Ethernet troubleshooting, packet analysis' },
+    { category: 'Hardware', items: 'USB diagnostics, firmware updates, BIOS/UEFI, device provisioning, power delivery' },
+    { category: 'Support Tools', items: 'Jira, Zendesk, Slack, Microsoft Teams, Confluence, system diagnostics tools' }
+  ];
+  
+  skills.forEach(skill => {
+    checkPageBreak(8);
+    doc.setFont('Helvetica', 'bold');
+    doc.setTextColor(...darkGray);
+    doc.text(skill.category + ':', margin, yPos);
+    yPos += 4;
+    
+    doc.setFont('Helvetica', 'normal');
+    const lines = doc.splitTextToSize(skill.items, contentWidth - 3);
+    doc.text(lines, margin + 3, yPos);
+    yPos += lines.length * 4 + 2;
+  });
+  
+  yPos += 3;
+  
+  // PROFESSIONAL STRENGTHS
+  checkPageBreak(15);
+  doc.setFont('Helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...accentColor);
+  doc.text('PROFESSIONAL STRENGTHS', margin, yPos);
+  yPos += 6;
+  
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...darkGray);
+  
+  const strengths = [
+    'Exceptional analytical and structured problem-solving abilities with systematic troubleshooting approach',
+    'Clear technical communication skills and meticulous technical documentation',
+    'Full ownership mentality with commitment to end-to-end issue resolution',
+    'Collaborative team player across engineering, QA, product, and customer-facing teams',
+    'Quick learner and adaptable in fast-paced, evolving environments',
+    'Strong attention to detail with excellent knowledge sharing practices'
+  ];
+  
+  strengths.forEach(strength => {
+    checkPageBreak(8);
+    const lines = doc.splitTextToSize(strength, contentWidth - 3);
+    doc.text('• ', margin, yPos);
+    doc.text(lines, margin + 3, yPos);
+    yPos += lines.length * 4.2 + 1.5;
+  });
+  
+  // FOOTER
+  checkPageBreak(10);
+  doc.setFont('Helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(...lightGray);
+  doc.line(margin, yPos, pageWidth - margin, yPos);
+  yPos += 5;
+  doc.text('References available upon request | ATS-Compliant Professional Resume', margin, yPos, { maxWidth: contentWidth, align: 'center' });
+  
+  // Save PDF
+  doc.save('Emmanuel_Tar_Professional_CV_ATS.pdf');
 }
 </script>
 </body>
