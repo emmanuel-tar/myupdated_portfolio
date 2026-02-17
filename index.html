@@ -1,0 +1,911 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emmanuel Tar — Technical Support Engineer</title>
+<meta name="description" content="Emmanuel Tar - Technical Support Engineer with 3+ years of experience. Available for Google, Meta, IBM, JP Morgan and top tech companies.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#060a0e; --surface:#0c1219; --card:#101820; --border:#182030; --border2:#243040;
+  --accent:#00e5ff; --accent2:#4ade80; --accent3:#f97316; --accent4:#a78bfa;
+  --text:#e2e8f0; --muted:#566880; --muted2:#8aa0b8;
+}
+[data-theme="light"] {
+  --bg:#f8fafc; --surface:#fff; --card:#f1f5f9; --border:#e2e8f0; --border2:#cbd5e1;
+  --text:#0f172a; --muted:#94a3b8; --muted2:#475569;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;cursor:none;transition:background 0.3s,color 0.3s;}
+
+/* ═══════════════════ CURSOR ═══════════════════ */
+.cursor-dot{width:6px;height:6px;background:var(--accent);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+.cursor-ring{width:30px;height:30px;border:1px solid rgba(0,229,255,0.4);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transition:width .2s,height .2s,border-color .2s,background .2s;transform:translate(-50%,-50%);}
+.cursor-ring.hover{width:50px;height:50px;border-color:var(--accent);background:rgba(0,229,255,0.05);}
+.cursor-ring.clicking{width:20px;height:20px;background:rgba(0,229,255,0.3);}
+
+/* ═══════════════════ NOISE + PROGRESS ═══════════════════ */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:500;}
+#progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent4));z-index:200;width:0;transition:width .08s;}
+
+/* ═══════════════════ NAV ═══════════════════ */
+nav{position:fixed;top:2px;width:100%;z-index:100;padding:1rem 3rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:rgba(6,10,14,0.88);backdrop-filter:blur(18px);transition:background .3s;}
+[data-theme="light"] nav{background:rgba(248,250,252,0.88);}
+.nav-logo{font-family:'Space Mono',monospace;font-size:0.82rem;color:var(--accent);letter-spacing:.12em;display:flex;align-items:center;gap:.5rem;}
+.nav-logo-dot{width:8px;height:8px;border-radius:50%;background:var(--accent2);animation:pulse 2s ease infinite;}
+.nav-links{display:flex;gap:1.75rem;align-items:center;}
+.nav-links a{font-size:.72rem;color:var(--muted2);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;position:relative;}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--accent);transition:width .25s;}
+.nav-links a:hover{color:var(--accent);}
+.nav-links a:hover::after{width:100%;}
+.nav-cta{background:var(--accent)!important;color:#000!important;padding:.45rem 1.1rem;border-radius:2px;font-weight:700!important;}
+.nav-cta::after{display:none!important;}
+.nav-cta:hover{background:#fff!important;color:#000!important;}
+.theme-btn{background:transparent;border:1px solid var(--border2);color:var(--muted2);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ═══════════════════ CANVAS PARTICLES ═══════════════════ */
+#particles-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;}
+
+/* ═══════════════════ HERO ═══════════════════ */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:8rem 5rem 4rem;position:relative;overflow:hidden;gap:4rem;}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,229,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.02) 1px,transparent 1px);background-size:60px 60px;z-index:0;}
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(90px);z-index:0;}
+.orb1{top:10%;right:5%;width:600px;height:600px;background:rgba(0,229,255,.06);}
+.orb2{bottom:10%;left:0;width:400px;height:400px;background:rgba(167,139,250,.05);}
+
+.hero-l,.hero-r{position:relative;z-index:2;}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);border-radius:100px;padding:.35rem .9rem;font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent);letter-spacing:.1em;margin-bottom:1.75rem;}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent2);animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.5);opacity:.6;}}
+
+.hero h1{font-size:clamp(2.8rem,5vw,5rem);font-weight:800;line-height:1.0;letter-spacing:-.03em;margin-bottom:1.5rem;}
+.hero h1 .l1{display:block;}
+.hero h1 .l2{display:block;background:linear-gradient(120deg,var(--accent) 0%,#38bdf8 50%,var(--accent4) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-desc{font-size:.95rem;color:var(--muted2);line-height:1.8;max-width:460px;margin-bottom:2.5rem;}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;}
+
+/* TYPING EFFECT */
+.typed-text{font-family:'Space Mono',monospace;font-size:.78rem;color:var(--accent2);letter-spacing:.06em;margin-bottom:1rem;min-height:1.2em;}
+.typed-cursor-el{display:inline-block;width:2px;height:.9em;background:var(--accent2);vertical-align:text-bottom;animation:blink 1s step-end infinite;margin-left:1px;}
+
+/* ═══════════════════ BUTTONS ═══════════════════ */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.7rem 1.6rem;border-radius:2px;font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .2s;text-decoration:none;border:none;position:relative;overflow:hidden;}
+.btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);opacity:0;transition:opacity .2s;}
+.btn:hover::after{opacity:1;}
+.btn-p{background:var(--accent);color:#000;font-weight:700;}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,229,255,.3);}
+.btn-g{background:transparent;color:var(--text);border:1px solid var(--border2);}
+.btn-g:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+
+/* ═══════════════════ TERMINAL ═══════════════════ */
+.terminal{background:var(--surface);border:1px solid var(--border2);border-radius:8px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6);}
+.t-hdr{background:var(--card);padding:.7rem 1rem;display:flex;align-items:center;gap:.45rem;border-bottom:1px solid var(--border);}
+.dot{width:11px;height:11px;border-radius:50%;}
+.dr{background:#ff5f57;}.dy{background:#febc2e;}.dg{background:#28c840;}
+.t-lbl{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);margin-left:.5rem;}
+.t-body{padding:1.5rem;font-family:'Space Mono',monospace;font-size:.73rem;line-height:1.95;}
+.tc{color:var(--muted);}.tk{color:var(--accent2);}.tv{color:var(--accent);}.ts{color:#fbbf24;}.tn{color:var(--accent4);}.tb{color:var(--accent3);}
+/* INTERACTIVE TERMINAL */
+.t-input-row{display:flex;align-items:center;gap:.5rem;margin-top:1rem;border-top:1px solid var(--border);padding-top:1rem;}
+.t-prompt{color:var(--accent2);font-size:.73rem;white-space:nowrap;}
+.t-input{background:transparent;border:none;outline:none;color:var(--accent);font-family:'Space Mono',monospace;font-size:.73rem;flex:1;caret-color:var(--accent);}
+.t-output{margin-top:.75rem;font-size:.7rem;color:var(--muted2);line-height:1.7;}
+.cursor{display:inline-block;width:7px;height:1em;background:var(--accent);vertical-align:text-bottom;animation:blink 1s step-end infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* ═══════════════════ SECTIONS ═══════════════════ */
+section{padding:6rem 5rem;border-top:1px solid var(--border);position:relative;}
+.sec-lbl{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem;}
+.sec-lbl::before{content:'';display:block;width:20px;height:1px;background:var(--accent);}
+.sec-ttl{font-size:clamp(1.7rem,3vw,2.4rem);font-weight:800;letter-spacing:-.02em;margin-bottom:3rem;}
+
+/* ═══════════════════ STATS (ANIMATED COUNTERS) ═══════════════════ */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:4rem;border-radius:4px;overflow:hidden;}
+.stat{background:var(--bg);padding:2rem;text-align:center;transition:background .3s;}
+.stat:hover{background:var(--surface);}
+.sn{font-size:2.5rem;font-weight:800;color:var(--accent);display:block;font-family:'Space Mono',monospace;}
+.sl{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:.3rem;}
+
+/* ═══════════════════ WHAT I'M LEARNING ═══════════════════ */
+.learning-strip{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:1.5rem 2rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-bottom:3rem;}
+.ls-label{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent3);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;}
+.ls-scroll{overflow:hidden;flex:1;}
+.ls-inner{display:flex;gap:2rem;animation:marquee 18s linear infinite;}
+.ls-item{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted2);white-space:nowrap;display:flex;align-items:center;gap:.4rem;}
+.ls-item::before{content:'→';color:var(--accent3);}
+@keyframes marquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* ═══════════════════ EMPLOYER SECTION ═══════════════════ */
+.emp-section{padding:5rem 5rem;border-top:1px solid var(--border);position:relative;}
+.emp-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);}
+.emp-row{display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap;margin-bottom:3rem;}
+.emp-btn{display:flex;align-items:center;gap:.6rem;padding:.65rem 1.5rem;border-radius:4px;border:1px solid var(--border2);background:var(--surface);color:var(--muted2);font-family:'Space Mono',monospace;font-size:.72rem;letter-spacing:.06em;cursor:pointer;transition:all .25s;text-transform:uppercase;}
+.emp-btn:hover{transform:translateY(-3px);}
+.emp-btn[data-e="google"]:hover,.emp-btn[data-e="google"].on{background:#4285F4;border-color:#4285F4;color:#fff;box-shadow:0 8px 24px rgba(66,133,244,.35);}
+.emp-btn[data-e="meta"]:hover,.emp-btn[data-e="meta"].on{background:#0082FB;border-color:#0082FB;color:#fff;box-shadow:0 8px 24px rgba(0,130,251,.35);}
+.emp-btn[data-e="ibm"]:hover,.emp-btn[data-e="ibm"].on{background:#006699;border-color:#006699;color:#fff;box-shadow:0 8px 24px rgba(0,102,153,.35);}
+.emp-btn[data-e="jpm"]:hover,.emp-btn[data-e="jpm"].on{background:#003087;border-color:#003087;color:#fff;box-shadow:0 8px 24px rgba(0,48,135,.35);}
+.emp-btn[data-e="amz"]:hover,.emp-btn[data-e="amz"].on{background:#232F3E;border-color:#FF9900;color:#FF9900;box-shadow:0 8px 24px rgba(255,153,0,.35);}
+.emp-btn[data-e="msft"]:hover,.emp-btn[data-e="msft"].on{background:#00A4EF;border-color:#00A4EF;color:#fff;box-shadow:0 8px 24px rgba(0,164,239,.35);}
+.emp-card{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:2.5rem;display:none;animation:fadeIn .35s ease;}
+.emp-card.on{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.ec-hdr{display:flex;align-items:center;gap:1.5rem;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);}
+.ec-ico{width:56px;height:56px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+.ec-ttl{font-size:1.25rem;font-weight:800;margin-bottom:.25rem;}
+.ec-sub{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
+.ec-body{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+.ec-col h4{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1rem;}
+.ec-col h4.mt{margin-top:1.25rem;}
+.ep{font-size:.88rem;color:var(--muted2);line-height:1.7;margin-bottom:.75rem;}
+.etag{display:inline-block;font-family:'Space Mono',monospace;font-size:.62rem;padding:.28rem .65rem;border-radius:2px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.15);color:var(--accent);margin:.2rem .2rem .2rem 0;letter-spacing:.04em;}
+
+/* MATCH SCORE */
+.match-score{display:flex;align-items:center;gap:1rem;margin-top:1.5rem;padding:1rem 1.25rem;background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.2);border-radius:4px;}
+.match-pct{font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--accent2);}
+.match-bar-wrap{flex:1;}
+.match-bar-label{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.35rem;}
+.match-bar-bg{height:4px;background:var(--border2);border-radius:2px;overflow:hidden;}
+.match-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width 1s ease;}
+
+/* ═══════════════════ EXPERIENCE TIMELINE ═══════════════════ */
+.timeline{position:relative;padding-left:2.5rem;}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(var(--accent),var(--border));}
+.tl-item{position:relative;padding:0 0 3rem 2rem;}
+.tl-dot{position:absolute;left:-2.5rem;top:.4rem;width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);box-shadow:0 0 0 3px rgba(0,229,255,.2),0 0 20px rgba(0,229,255,.3);}
+.tl-dot.past{background:var(--muted);}
+.tl-date{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.04em;margin-bottom:.3rem;}
+.tl-co{font-size:.75rem;color:var(--muted2);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.2rem;}
+.tl-badge{display:inline-block;font-size:.55rem;font-family:'Space Mono',monospace;padding:.18rem .5rem;border-radius:2px;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--accent2);letter-spacing:.05em;margin-bottom:.6rem;text-transform:uppercase;}
+.tl-role{font-size:1.15rem;font-weight:800;margin-bottom:1rem;letter-spacing:-.01em;}
+.tl-ul{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.tl-ul li{font-size:.88rem;color:var(--muted2);padding-left:1.25rem;position:relative;line-height:1.65;}
+.tl-ul li::before{content:'▸';position:absolute;left:0;color:var(--accent);font-size:.65rem;top:.18rem;}
+
+/* ═══════════════════ SKILL BARS ═══════════════════ */
+.skill-bars-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem 3rem;margin-bottom:3rem;}
+.sb-item{margin-bottom:.5rem;}
+.sb-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;}
+.sb-name{font-size:.82rem;font-weight:600;}
+.sb-pct{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent);}
+.sb-track{height:4px;background:var(--border2);border-radius:2px;overflow:hidden;}
+.sb-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent4));border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1);}
+
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.sk-card{background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:1.75rem;transition:all .25s;position:relative;overflow:hidden;}
+.sk-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent4));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.sk-card:hover{border-color:rgba(0,229,255,.25);transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,.25);}
+.sk-card:hover::before{transform:scaleX(1);}
+.sk-ico{font-size:1.4rem;margin-bottom:.9rem;}
+.sk-cat{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent);text-transform:uppercase;letter-spacing:.12em;margin-bottom:.85rem;}
+.tag{font-family:'Space Mono',monospace;font-size:.62rem;padding:.28rem .65rem;border-radius:2px;background:var(--card);border:1px solid var(--border2);color:var(--muted2);display:inline-block;margin:.2rem .15rem 0 0;letter-spacing:.04em;}
+
+/* ═══════════════════ TESTIMONIALS ═══════════════════ */
+.testimonials{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.t-card{background:var(--surface);border:1px solid var(--border2);border-radius:6px;padding:1.75rem;position:relative;transition:all .25s;}
+.t-card:hover{border-color:rgba(0,229,255,.2);transform:translateY(-4px);}
+.t-card::before{content:'"';position:absolute;top:1rem;right:1.25rem;font-size:3rem;color:rgba(0,229,255,.1);font-family:'Syne',sans-serif;font-weight:800;line-height:1;}
+.t-text{font-size:.88rem;color:var(--muted2);line-height:1.7;margin-bottom:1.25rem;font-style:italic;}
+.t-author{display:flex;align-items:center;gap:.75rem;}
+.t-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent4));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#000;flex-shrink:0;}
+.t-name{font-weight:700;font-size:.85rem;}
+.t-title{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.06em;}
+
+/* ═══════════════════ CERTS ═══════════════════ */
+.cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-bottom:3rem;}
+.cert-card{background:var(--surface);border:1px solid var(--border2);border-radius:4px;padding:1.5rem 1.75rem;display:flex;align-items:center;gap:1.25rem;transition:all .25s;position:relative;overflow:hidden;}
+.cert-card::after{content:'✓ Verified';position:absolute;top:.6rem;right:.75rem;font-family:'Space Mono',monospace;font-size:.55rem;color:var(--accent2);letter-spacing:.06em;opacity:.7;}
+.cert-card:hover{border-color:rgba(0,229,255,.3);transform:translateX(4px);}
+.cert-ico{width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.cert-n{font-weight:700;font-size:.9rem;margin-bottom:.2rem;}
+.cert-s{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+
+/* ═══════════════════ CV VIEWER ═══════════════════ */
+.cv-sec{padding:6rem 5rem;border-top:1px solid var(--border);background:var(--surface);}
+.cv-wrap{max-width:880px;margin:0 auto;background:var(--bg);border:1px solid var(--border2);border-radius:8px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.4);}
+.cv-bar{background:var(--card);border-bottom:1px solid var(--border);padding:.9rem 1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.cv-bar-dots{display:flex;gap:.4rem;}
+.cv-bar-title{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted);flex:1;text-align:center;}
+.cv-bar-btns{display:flex;gap:.5rem;}
+.cvb{font-family:'Space Mono',monospace;font-size:.62rem;padding:.35rem .85rem;border-radius:2px;border:1px solid var(--border2);background:transparent;color:var(--muted2);cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;}
+.cvb:hover{border-color:var(--accent);color:var(--accent);}
+.cv-body{padding:3rem 3.5rem;}
+.cv-name{font-size:2rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.3rem;}
+.cv-role{font-family:'Space Mono',monospace;font-size:.72rem;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;}
+.cv-contacts{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:2px solid var(--accent);}
+.cv-c{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--muted2);display:flex;align-items:center;gap:.4rem;}
+.cv-sh{font-family:'Space Mono',monospace;font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--border2);padding-bottom:.5rem;margin:2rem 0 1.25rem;}
+.cv-p{font-size:.88rem;color:var(--muted2);line-height:1.75;}
+.cv-tags{display:flex;flex-wrap:wrap;gap:.4rem;}
+.cv-tag{font-family:'Space Mono',monospace;font-size:.6rem;padding:.25rem .6rem;border-radius:2px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.2);color:var(--accent);letter-spacing:.04em;}
+.cv-job{margin-bottom:1.75rem;}
+.cv-jh{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem;margin-bottom:.35rem;}
+.cv-jt{font-weight:800;font-size:.95rem;}
+.cv-jc{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent2);text-transform:uppercase;letter-spacing:.06em;}
+.cv-jd{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);}
+.cv-ul{list-style:none;margin-top:.6rem;display:flex;flex-direction:column;gap:.4rem;}
+.cv-ul li{font-size:.82rem;color:var(--muted2);padding-left:1.1rem;position:relative;line-height:1.6;}
+.cv-ul li::before{content:'•';position:absolute;left:0;color:var(--accent);}
+.cv-st{display:grid;grid-template-columns:130px 1fr;gap:.6rem 1rem;font-size:.82rem;}
+.cv-sk{color:var(--muted2);font-weight:700;font-size:.78rem;}
+.cv-sv{color:var(--text);}
+.cv-edu-row{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:.5rem;}
+.cv-deg{font-weight:800;font-size:.95rem;}
+.cv-sch{font-size:.82rem;color:var(--muted2);}
+.cv-ed{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);}
+
+/* ═══════════════════ CONTACT ═══════════════════ */
+.con-inner{max-width:680px;margin:0 auto;text-align:center;}
+.con-inner .sec-lbl{justify-content:center;}
+.con-inner .sec-lbl::before{display:none;}
+.con-desc{color:var(--muted2);line-height:1.7;margin-bottom:2.5rem;font-size:.93rem;}
+.con-links{display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.con-link{display:flex;align-items:center;gap:.5rem;font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted2);padding:.55rem 1.1rem;border:1px solid var(--border2);border-radius:2px;text-decoration:none;letter-spacing:.05em;transition:all .2s;position:relative;}
+.con-link:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);}
+/* Copy to clipboard */
+.copy-toast{position:fixed;bottom:2rem;right:2rem;background:var(--accent2);color:#000;font-family:'Space Mono',monospace;font-size:.72rem;padding:.6rem 1.2rem;border-radius:4px;z-index:500;transform:translateY(4rem);opacity:0;transition:all .3s;}
+.copy-toast.show{transform:translateY(0);opacity:1;}
+
+/* ═══════════════════ FOOTER ═══════════════════ */
+footer{padding:1.75rem 5rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+footer p{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);letter-spacing:.08em;}
+.back-top{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted2);text-decoration:none;letter-spacing:.08em;transition:color .2s;}
+.back-top:hover{color:var(--accent);}
+
+/* ═══════════════════ REVEAL ═══════════════════ */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease;}
+.rv.vis{opacity:1;transform:translateY(0);}
+.rv.delay1{transition-delay:.1s;}
+.rv.delay2{transition-delay:.2s;}
+.rv.delay3{transition-delay:.3s;}
+
+/* ═══════════════════ RESPONSIVE ═══════════════════ */
+@media(max-width:1024px){
+  nav{padding:1rem 1.5rem;}
+  .hero{grid-template-columns:1fr;padding:6rem 2rem 3rem;}
+  .hero-r{display:none;}
+  section,.cv-sec,.emp-section{padding:4rem 1.5rem;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .ec-body{grid-template-columns:1fr;}
+  .cv-body{padding:2rem 1.5rem;}
+  footer{padding:1.5rem;flex-direction:column;}
+  .skill-bars-grid{grid-template-columns:1fr;}
+  .testimonials{grid-template-columns:1fr;}
+  .skills-grid{grid-template-columns:1fr 1fr;}
+  .cert-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .skills-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:2.5rem;}
+  .nav-links{display:none;}
+  body{cursor:auto;}
+  .cursor-dot,.cursor-ring{display:none;}
+}
+
+/* ═══════════════════ PRINT ═══════════════════ */
+@media print{
+  body{background:#fff;color:#000;cursor:auto;}
+  nav,.hero,.emp-section,#skills,#certs,#testimonials,#contact,footer,.cursor-dot,.cursor-ring,#progress,.copy-toast{display:none!important;}
+  .cv-sec{padding:0;background:#fff;}
+  .cv-wrap{box-shadow:none;border:none;}
+  .cv-bar{display:none;}
+  .cv-body{padding:0;}
+  .cv-name,.cv-jt,.cv-deg{color:#000;}
+  .cv-p,.cv-ul li,.cv-sv,.cv-sch{color:#333;}
+  .cv-sk,.cv-jc,.cv-jd,.cv-ed,.cv-c{color:#555;}
+  .cv-tag{background:#f0f0f0;border:1px solid #ddd;color:#333;}
+  .cv-contacts{border-bottom:2px solid #4285F4;}
+  .cv-sh{color:#4285F4;border-bottom:1px solid #ddd;}
+  .cv-role{color:#4285F4;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-dot" id="cd"></div>
+<div class="cursor-ring" id="cr"></div>
+<div id="progress"></div>
+<div class="copy-toast" id="copyToast">📋 Copied to clipboard!</div>
+
+<!-- ═══════════ NAV ═══════════ -->
+<nav>
+  <div class="nav-logo"><div class="nav-logo-dot"></div> ET_</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#employers">For Employers</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a href="#cv">Resume</a>
+    <a href="#contact" class="nav-cta">Hire Me</a>
+  </div>
+  <button class="theme-btn" id="themeBtn" title="Toggle theme">🌙</button>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero" style="border-top:none;">
+  <canvas id="particles-canvas"></canvas>
+  <div class="grid-bg"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
+  <div class="hero-l">
+    <div class="hero-badge"><div class="badge-dot"></div> Open to new opportunities</div>
+    <div class="typed-text" id="typedText"><span class="typed-cursor-el"></span></div>
+    <h1><span class="l1">Emmanuel</span><span class="l2">Tar.</span></h1>
+    <p class="hero-desc">Technical Support Engineer with 3+ years turning complex full-stack, hardware, USB and network crises into structured resolutions — with the analytical rigour and communication skills that world-class companies demand.</p>
+    <div class="hero-actions">
+      <a href="#cv" class="btn btn-p">View Full Resume ↓</a>
+      <a href="#employers" class="btn btn-g">See Your Company's Fit</a>
+    </div>
+  </div>
+
+  <div class="hero-r">
+    <div class="terminal">
+      <div class="t-hdr">
+        <div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div>
+        <span class="t-lbl">interactive_terminal.sh — try it!</span>
+      </div>
+      <div class="t-body">
+        <span class="tc">// Type a command below</span><br>
+        <span class="tc">// Try: help · skills · experience · contact · hire</span><br><br>
+        <span class="tk">"name"</span>: <span class="ts">"Emmanuel Tar"</span>,<br>
+        <span class="tk">"role"</span>: <span class="ts">"Technical Support Engineer"</span>,<br>
+        <span class="tk">"status"</span>: <span class="tb">"AVAILABLE"</span><br>
+        <div class="t-output" id="termOutput"></div>
+      </div>
+      <div class="t-input-row">
+        <span class="t-prompt">emmanuel@portfolio:~$</span>
+        <input class="t-input" id="termInput" type="text" placeholder="type a command..." autocomplete="off" spellcheck="false">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ABOUT ═══════════ -->
+<section id="about">
+  <div class="sec-lbl">About</div>
+  <h2 class="sec-ttl">Turning Complexity Into Clarity</h2>
+
+  <div class="stats-grid rv">
+    <div class="stat"><span class="sn" data-count="3">0</span><span class="sl">Years Experience</span></div>
+    <div class="stat"><span class="sn" data-count="2">0</span><span class="sl">Companies Served</span></div>
+    <div class="stat"><span class="sn" data-count="4">0</span><span class="sl">Certifications</span></div>
+    <div class="stat"><span class="sn" data-count="100">0</span><span class="sl">% Issue Ownership</span></div>
+  </div>
+
+  <!-- LEARNING STRIP -->
+  <div class="learning-strip rv">
+    <span class="ls-label">📚 Currently Exploring</span>
+    <div class="ls-scroll">
+      <div class="ls-inner">
+        <span class="ls-item">Google Cloud Support Engineering</span>
+        <span class="ls-item">Python for Data Analytics</span>
+        <span class="ls-item">Advanced SQL Optimisation</span>
+        <span class="ls-item">API Debugging & REST Architecture</span>
+        <span class="ls-item">ITIL 4 Specialist</span>
+        <span class="ls-item">Kubernetes Fundamentals</span>
+        <span class="ls-item">Google Cloud Support Engineering</span>
+        <span class="ls-item">Python for Data Analytics</span>
+        <span class="ls-item">Advanced SQL Optimisation</span>
+        <span class="ls-item">API Debugging & REST Architecture</span>
+        <span class="ls-item">ITIL 4 Specialist</span>
+        <span class="ls-item">Kubernetes Fundamentals</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;" class="rv">
+    <div>
+      <p style="color:var(--muted2);line-height:1.8;font-size:.93rem;margin-bottom:1rem;">I'm a Technical Support Engineer specialising in escalated diagnostics across the full stack — from UI and API-layer bugs down to USB hardware, firmware edge cases, and packet-level network analysis.</p>
+      <p style="color:var(--muted2);line-height:1.8;font-size:.93rem;">My edge is the bridge between customers and engineering: I investigate, document with precision, and prevent recurrence. My structured defect reports directly influence product roadmaps.</p>
+    </div>
+    <div>
+      <p style="color:var(--muted2);line-height:1.8;font-size:.93rem;margin-bottom:1rem;">With a Google Advanced Data Analytics certification and growing skills in Python, JavaScript, and MySQL, I'm expanding into data-driven support engineering — understanding failure patterns at scale.</p>
+      <p style="color:var(--muted2);line-height:1.8;font-size:.93rem;">My goal: join a world-class engineering organisation — Google, IBM, Meta, JP Morgan, Amazon, or Microsoft — where rigour, speed, and quality are the absolute baseline.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ EMPLOYER TARGETING ═══════════ -->
+<div class="emp-section" id="employers">
+  <div style="text-align:center;margin-bottom:2.5rem;">
+    <div class="sec-lbl" style="justify-content:center;"><span style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;">Tailored For You</span></div>
+    <h2 class="sec-ttl" style="text-align:center;margin-bottom:.75rem;">Why Hire Emmanuel?</h2>
+    <p style="color:var(--muted2);font-size:.9rem;max-width:520px;margin:0 auto;">Select your company to see a personalised breakdown — including your role match score.</p>
+  </div>
+  <div class="emp-row">
+    <button class="emp-btn" data-e="google" onclick="showEmp('google')">🔵 Google</button>
+    <button class="emp-btn" data-e="meta" onclick="showEmp('meta')">📘 Meta</button>
+    <button class="emp-btn" data-e="ibm" onclick="showEmp('ibm')">💠 IBM</button>
+    <button class="emp-btn" data-e="jpm" onclick="showEmp('jpm')">🏦 JP Morgan</button>
+    <button class="emp-btn" data-e="amz" onclick="showEmp('amz')">📦 Amazon</button>
+    <button class="emp-btn" data-e="msft" onclick="showEmp('msft')">🪟 Microsoft</button>
+  </div>
+
+  <div class="emp-card" id="ec-google">
+    <div class="ec-hdr"><div class="ec-ico" style="background:rgba(66,133,244,.15);">🔵</div><div><div class="ec-ttl">Google — Technical Solutions Engineer / gTech</div><div class="ec-sub">Developer Relations · Cloud Support · Trust & Safety</div></div></div>
+    <div class="ec-body">
+      <div class="ec-col">
+        <h4>Why Emmanuel Fits Google</h4>
+        <p class="ep">Google's TSEs need deep cross-stack diagnostic ability, structured root-cause thinking, and the capacity to influence engineering through defect feedback. Emmanuel brings all three — backed by a <strong>Google Advanced Data Analytics certification</strong> that demonstrates alignment with Google's data-first culture.</p>
+        <p class="ep">His RCPS sessions and structured bug reports align directly with Google's postmortem engineering culture and SRE principles.</p>
+        <div class="match-score"><div class="match-pct" data-target="92">0%</div><div class="match-bar-wrap"><div class="match-bar-label">Role Compatibility Score</div><div class="match-bar-bg"><div class="match-bar-fill" data-width="92"></div></div></div></div>
+      </div>
+      <div class="ec-col">
+        <h4>Matching Skills</h4>
+        <span class="etag">Root Cause Analysis</span><span class="etag">Cloud/On-Prem Sync</span><span class="etag">Full-Stack Debugging</span><span class="etag">SQL / MySQL</span><span class="etag">Log Analysis</span><span class="etag">Network Diagnostics</span><span class="etag">Google Data Analytics ✓</span><span class="etag">ITIL Incident Mgmt</span><span class="etag">Customer Ownership</span>
+        <h4 class="mt">Target Roles</h4>
+        <span class="etag">Technical Solutions Engineer</span><span class="etag">Support Engineer – gTech</span><span class="etag">Developer Support Engineer</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="emp-card" id="ec-meta">
+    <div class="ec-hdr"><div class="ec-ico" style="background:rgba(0,130,251,.15);">📘</div><div><div class="ec-ttl">Meta — Production Engineer / Support Engineering</div><div class="ec-sub">Infrastructure · Developer Tools · Trust & Safety Ops</div></div></div>
+    <div class="ec-body">
+      <div class="ec-col">
+        <h4>Why Emmanuel Fits Meta</h4>
+        <p class="ep">Meta prizes speed, ownership, and the ability to diagnose distributed failures at scale. Emmanuel's expertise in log analysis, packet-level reasoning, and cloud sync diagnosis maps directly to Meta's infrastructure challenges.</p>
+        <p class="ep">His full-ownership mindset and RCPS experience match Meta's engineering culture. Cross-platform (Windows/macOS) competency makes him immediately productive.</p>
+        <div class="match-score"><div class="match-pct" data-target="88">0%</div><div class="match-bar-wrap"><div class="match-bar-label">Role Compatibility Score</div><div class="match-bar-bg"><div class="match-bar-fill" data-width="88"></div></div></div></div>
+      </div>
+      <div class="ec-col">
+        <h4>Matching Skills</h4>
+        <span class="etag">Log & Packet Analysis</span><span class="etag">Incident Management</span><span class="etag">Cloud Sync Diagnosis</span><span class="etag">API-layer Debugging</span><span class="etag">Cross-Platform Win/macOS</span><span class="etag">SQL Queries</span><span class="etag">Bug Reporting & RCA</span><span class="etag">Jira / Zendesk</span>
+        <h4 class="mt">Target Roles</h4>
+        <span class="etag">Technical Support Engineer</span><span class="etag">Operations Analyst</span><span class="etag">Developer Support</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="emp-card" id="ec-ibm">
+    <div class="ec-hdr"><div class="ec-ico" style="background:rgba(0,102,153,.15);">💠</div><div><div class="ec-ttl">IBM — IT Support Specialist / Technical Support Analyst</div><div class="ec-sub">IBM Global Services · Cloud · Watson · Enterprise</div></div></div>
+    <div class="ec-body">
+      <div class="ec-col">
+        <h4>Why Emmanuel Fits IBM</h4>
+        <p class="ep">IBM's enterprise support culture is built on ITIL, structured incident management, and meticulous documentation. Emmanuel's <strong>ITIL Foundation certification</strong> and hands-on incident/problem-management experience make him a natural fit for IBM's global services framework.</p>
+        <p class="ep">His Cisco Data Science certification and SQL skills align with IBM's data-driven enterprise solutions.</p>
+        <div class="match-score"><div class="match-pct" data-target="90">0%</div><div class="match-bar-wrap"><div class="match-bar-label">Role Compatibility Score</div><div class="match-bar-bg"><div class="match-bar-fill" data-width="90"></div></div></div></div>
+      </div>
+      <div class="ec-col">
+        <h4>Matching Skills</h4>
+        <span class="etag">ITIL Foundation ✓</span><span class="etag">Incident Management</span><span class="etag">Problem Management</span><span class="etag">MySQL / SQL</span><span class="etag">Hardware Diagnostics</span><span class="etag">Network Troubleshooting</span><span class="etag">Cisco Data Science ✓</span><span class="etag">Documentation</span>
+        <h4 class="mt">Target Roles</h4>
+        <span class="etag">IT Support Specialist</span><span class="etag">Technical Support Analyst</span><span class="etag">Service Desk Engineer</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="emp-card" id="ec-jpm">
+    <div class="ec-hdr"><div class="ec-ico" style="background:rgba(0,48,135,.15);">🏦</div><div><div class="ec-ttl">JP Morgan Chase — Technology Support / IT Analyst</div><div class="ec-sub">Corporate Technology · ITSD · Infrastructure & Operations</div></div></div>
+    <div class="ec-body">
+      <div class="ec-col">
+        <h4>Why Emmanuel Fits JP Morgan</h4>
+        <p class="ep">JP Morgan demands precision, security awareness, and ITIL-aligned incident handling across mission-critical financial systems. Emmanuel's structured defect management, end-to-end ticket ownership, and documentation discipline meet financial services compliance standards.</p>
+        <div class="match-score"><div class="match-pct" data-target="85">0%</div><div class="match-bar-wrap"><div class="match-bar-label">Role Compatibility Score</div><div class="match-bar-bg"><div class="match-bar-fill" data-width="85"></div></div></div></div>
+      </div>
+      <div class="ec-col">
+        <h4>Matching Skills</h4>
+        <span class="etag">ITIL Foundation ✓</span><span class="etag">Incident Ownership</span><span class="etag">Firewall / DHCP / Network</span><span class="etag">Hardware & Firmware</span><span class="etag">CompTIA A+ ✓</span><span class="etag">Technical Documentation</span><span class="etag">Ticket Management</span>
+        <h4 class="mt">Target Roles</h4>
+        <span class="etag">Technology Support Analyst</span><span class="etag">IT Service Desk Engineer</span><span class="etag">Infrastructure Support</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="emp-card" id="ec-amz">
+    <div class="ec-hdr"><div class="ec-ico" style="background:rgba(255,153,0,.1);">📦</div><div><div class="ec-ttl">Amazon — Support Engineer / Technical Support</div><div class="ec-sub">AWS · Device Support · Alexa · Operations Engineering</div></div></div>
+    <div class="ec-body">
+      <div class="ec-col">
+        <h4>Why Emmanuel Fits Amazon</h4>
+        <p class="ep">Amazon's Leadership Principles — "Dive Deep", "Ownership", "Customer Obsession" — are lived values in Emmanuel's work. His USB/firmware expertise is directly relevant to Amazon Device Support (Kindle, Echo, Ring), and his cloud/on-prem sync skills apply to AWS support roles.</p>
+        <div class="match-score"><div class="match-pct" data-target="89">0%</div><div class="match-bar-wrap"><div class="match-bar-label">Role Compatibility Score</div><div class="match-bar-bg"><div class="match-bar-fill" data-width="89"></div></div></div></div>
+      </div>
+      <div class="ec-col">
+        <h4>Matching Skills</h4>
+        <span class="etag">Dive Deep (RCA)</span><span class="etag">Customer Obsession</span><span class="etag">USB / Firmware / Hardware</span><span class="etag">Cloud Sync Issues</span><span class="etag">Log & Network Analysis</span><span class="etag">SQL / MySQL</span><span class="etag">Full Ticket Ownership</span>
+        <h4 class="mt">Target Roles</h4>
+        <span class="etag">Support Engineer – AWS</span><span class="etag">Device Support Specialist</span><span class="etag">Technical Support Analyst</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="emp-card" id="ec-msft">
+    <div class="ec-hdr"><div class="ec-ico" style="background:rgba(0,164,239,.15);">🪟</div><div><div class="ec-ttl">Microsoft — Support Escalation Engineer / Technical Advisor</div><div class="ec-sub">Azure · M365 · Surface · Developer Support · CSS</div></div></div>
+    <div class="ec-body">
+      <div class="ec-col">
+        <h4>Why Emmanuel Fits Microsoft</h4>
+        <p class="ep">Microsoft's CSS and Azure support teams need engineers who bridge technical depth with clear communication. Emmanuel's Windows expertise, cloud/on-prem sync troubleshooting, and foundational Python/JavaScript skills align with Microsoft's product breadth and engineering feedback culture.</p>
+        <div class="match-score"><div class="match-pct" data-target="87">0%</div><div class="match-bar-wrap"><div class="match-bar-label">Role Compatibility Score</div><div class="match-bar-bg"><div class="match-bar-fill" data-width="87"></div></div></div></div>
+      </div>
+      <div class="ec-col">
+        <h4>Matching Skills</h4>
+        <span class="etag">Windows Expert</span><span class="etag">Python Foundational</span><span class="etag">Cloud/On-Prem Sync</span><span class="etag">SQL / MySQL</span><span class="etag">JS Foundational</span><span class="etag">Driver & Firmware Fixes</span><span class="etag">Structured Bug Reports</span><span class="etag">CompTIA A+ ✓</span>
+        <h4 class="mt">Target Roles</h4>
+        <span class="etag">Support Escalation Engineer</span><span class="etag">Azure Support Engineer</span><span class="etag">M365 Technical Advisor</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ EXPERIENCE TIMELINE ═══════════ -->
+<section id="experience">
+  <div class="sec-lbl">Experience</div>
+  <h2 class="sec-ttl">Professional Timeline</h2>
+  <div class="timeline">
+    <div class="tl-item rv">
+      <div class="tl-dot"></div>
+      <div class="tl-date">Feb 2022 — Present</div>
+      <div class="tl-co">Yanot Ltd</div>
+      <div class="tl-badge">Current Role</div>
+      <div class="tl-role">Software Support Analyst</div>
+      <ul class="tl-ul">
+        <li>Primary escalation point for complex Tier-2/3 software issues spanning UI, application logic, APIs, and databases — owning incidents end-to-end until full resolution.</li>
+        <li>Diagnose and resolve USB-connected hardware failures: device detection errors, driver conflicts, power delivery problems, and firmware compatibility gaps across client environments.</li>
+        <li>Troubleshoot cloud/on-prem synchronisation issues using structured log analysis and packet-level reasoning, directly reducing sync failure rates.</li>
+        <li>File detailed, reproducible bug reports directly influencing product roadmap decisions; participate in RCPS sessions with engineering to prevent systemic recurrence.</li>
+        <li>Support full software release cycles — validation, documentation, and deployment — minimising post-launch incidents and improving release quality.</li>
+        <li>Coordinate with Account Managers and Customer Success to deliver a premium, high-ownership support experience across all user tiers.</li>
+      </ul>
+    </div>
+    <div class="tl-item rv">
+      <div class="tl-dot past"></div>
+      <div class="tl-date">Feb 2020 — Jan 2022</div>
+      <div class="tl-co">PosShop Ltd</div>
+      <div class="tl-role">IT Support Analyst</div>
+      <ul class="tl-ul">
+        <li>Diagnosed hardware, software, and network issues across distributed POS environments, maintaining high system uptime across multiple client sites.</li>
+        <li>Managed full device lifecycle — provisioning, updates, and maintenance — for a fleet of POS terminals across diverse client environments.</li>
+        <li>Delivered clear, empathetic technical guidance to non-technical users, improving first-contact resolution and satisfaction scores.</li>
+        <li>Managed support tickets end-to-end with full ownership, ensuring SLA adherence and meticulous resolution documentation.</li>
+        <li>Collaborated with IT, engineering, and operations teams to resolve recurring issues and implement systemic improvements.</li>
+      </ul>
+    </div>
+    <div class="tl-item rv" style="padding-bottom:0;">
+      <div class="tl-dot past"></div>
+      <div class="tl-date">2013 — 2018</div>
+      <div class="tl-co">KNUST, Ghana</div>
+      <div class="tl-role">B.Sc. Computer Science</div>
+      <p style="color:var(--muted2);font-size:.88rem;line-height:1.65;">Kwame Nkrumah University of Science and Technology — one of Africa's top engineering institutions. Foundation in software engineering, algorithms, data structures, computer networks, and systems architecture.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SKILLS ═══════════ -->
+<section id="skills">
+  <div class="sec-lbl">Skills</div>
+  <h2 class="sec-ttl">Technical Arsenal</h2>
+
+  <!-- SKILL PROFICIENCY BARS -->
+  <h3 style="font-family:'Space Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.15em;text-transform:uppercase;margin-bottom:1.5rem;">Proficiency Levels</h3>
+  <div class="skill-bars-grid rv" id="skillBars">
+    <div><div class="sb-item"><div class="sb-header"><span class="sb-name">Full-Stack Troubleshooting</span><span class="sb-pct">95%</span></div><div class="sb-track"><div class="sb-fill" data-pct="95"></div></div></div>
+    <div class="sb-item"><div class="sb-header"><span class="sb-name">Network Diagnostics (DHCP, Firewall)</span><span class="sb-pct">88%</span></div><div class="sb-track"><div class="sb-fill" data-pct="88"></div></div></div>
+    <div class="sb-item"><div class="sb-header"><span class="sb-name">USB / Hardware / Firmware</span><span class="sb-pct">90%</span></div><div class="sb-track"><div class="sb-fill" data-pct="90"></div></div></div>
+    <div class="sb-item"><div class="sb-header"><span class="sb-name">Root Cause Analysis & RCPS</span><span class="sb-pct">92%</span></div><div class="sb-track"><div class="sb-fill" data-pct="92"></div></div></div></div>
+    <div><div class="sb-item"><div class="sb-header"><span class="sb-name">SQL / MySQL</span><span class="sb-pct">78%</span></div><div class="sb-track"><div class="sb-fill" data-pct="78"></div></div></div>
+    <div class="sb-item"><div class="sb-header"><span class="sb-name">Cloud/On-Prem Sync Analysis</span><span class="sb-pct">85%</span></div><div class="sb-track"><div class="sb-fill" data-pct="85"></div></div></div>
+    <div class="sb-item"><div class="sb-header"><span class="sb-name">Incident & Problem Management</span><span class="sb-pct">91%</span></div><div class="sb-track"><div class="sb-fill" data-pct="91"></div></div></div>
+    <div class="sb-item"><div class="sb-header"><span class="sb-name">Python / JavaScript (Foundational)</span><span class="sb-pct">55%</span></div><div class="sb-track"><div class="sb-fill" data-pct="55"></div></div></div></div>
+  </div>
+
+  <!-- SKILL CARDS -->
+  <div class="skills-grid" style="margin-top:3rem;">
+    <div class="sk-card rv"><div class="sk-ico">🔧</div><div class="sk-cat">Troubleshooting</div><div><span class="tag">Full-Stack Debugging</span><span class="tag">Root Cause Analysis</span><span class="tag">USB Diagnostics</span><span class="tag">Firmware Updates</span><span class="tag">Driver Conflicts</span><span class="tag">Defect Reporting</span></div></div>
+    <div class="sk-card rv delay1"><div class="sk-ico">🌐</div><div class="sk-cat">Networking</div><div><span class="tag">DHCP / IP Config</span><span class="tag">Firewall Rules</span><span class="tag">Wi-Fi / Ethernet</span><span class="tag">Packet Analysis</span><span class="tag">Cloud/On-Prem Sync</span><span class="tag">Bandwidth Performance</span></div></div>
+    <div class="sk-card rv delay2"><div class="sk-ico">💻</div><div class="sk-cat">Programming & Data</div><div><span class="tag">Python (Foundational)</span><span class="tag">JavaScript (Foundational)</span><span class="tag">MySQL / SQL</span><span class="tag">SELECT / JOIN / UPDATE</span><span class="tag">Log Analysis</span><span class="tag">Data Analytics</span></div></div>
+    <div class="sk-card rv"><div class="sk-ico">🖥️</div><div class="sk-cat">Platforms & Tools</div><div><span class="tag">Windows</span><span class="tag">macOS</span><span class="tag">Jira</span><span class="tag">Zendesk</span><span class="tag">Admin Consoles</span><span class="tag">Logging Tools</span></div></div>
+    <div class="sk-card rv delay1"><div class="sk-ico">📋</div><div class="sk-cat">Process & ITSM</div><div><span class="tag">ITIL Framework</span><span class="tag">Incident Management</span><span class="tag">Problem Management</span><span class="tag">RCPS Sessions</span><span class="tag">Release Validation</span><span class="tag">SLA Adherence</span></div></div>
+    <div class="sk-card rv delay2"><div class="sk-ico">🤝</div><div class="sk-cat">Professional Strengths</div><div><span class="tag">Full Ownership</span><span class="tag">Cross-team Collab</span><span class="tag">Technical Writing</span><span class="tag">Analytical Reasoning</span><span class="tag">Customer Empathy</span><span class="tag">Continuous Learning</span></div></div>
+  </div>
+</section>
+
+<!-- ═══════════ CERTIFICATIONS ═══════════ -->
+<section id="certs">
+  <div class="sec-lbl">Credentials</div>
+  <h2 class="sec-ttl">Certifications & Education</h2>
+  <div class="cert-grid">
+    <div class="cert-card rv"><div class="cert-ico" style="background:rgba(0,229,255,.1);">🔵</div><div><div class="cert-n">CompTIA A+</div><div class="cert-s">CompTIA · Hardware & IT Infrastructure</div></div></div>
+    <div class="cert-card rv delay1"><div class="cert-ico" style="background:rgba(66,133,244,.15);">🟢</div><div><div class="cert-n">Google Advanced Data Analytics</div><div class="cert-s">Google Career Certificates</div></div></div>
+    <div class="cert-card rv delay2"><div class="cert-ico" style="background:rgba(249,115,22,.12);">🟠</div><div><div class="cert-n">ITIL Foundation</div><div class="cert-s">Axelos · Incident & Problem Management</div></div></div>
+    <div class="cert-card rv delay3"><div class="cert-ico" style="background:rgba(167,139,250,.12);">🟣</div><div><div class="cert-n">Cisco Data Science Certification</div><div class="cert-s">Cisco Networking Academy</div></div></div>
+  </div>
+</section>
+
+<!-- ═══════════ TESTIMONIALS ═══════════ -->
+<section id="testimonials">
+  <div class="sec-lbl">Social Proof</div>
+  <h2 class="sec-ttl">What People Say</h2>
+  <div class="testimonials">
+    <div class="t-card rv">
+      <p class="t-text">"Emmanuel has an exceptional ability to diagnose complex issues that other engineers couldn't resolve. His structured approach to defect documentation directly improved our product stability."</p>
+      <div class="t-author"><div class="t-avatar">PM</div><div><div class="t-name">Product Manager</div><div class="t-title">Yanot Ltd · 2023</div></div></div>
+    </div>
+    <div class="t-card rv delay1">
+      <p class="t-text">"What sets Emmanuel apart is his ownership mindset. He doesn't just close tickets — he investigates root causes, writes thorough reports, and follows up until the engineering team acts on them."</p>
+      <div class="t-author"><div class="t-avatar">EL</div><div><div class="t-name">Engineering Lead</div><div class="t-title">Yanot Ltd · 2024</div></div></div>
+    </div>
+    <div class="t-card rv delay2">
+      <p class="t-text">"During critical system outages, Emmanuel was always the calm voice with a structured plan. His network and hardware debugging skills saved us countless hours of downtime."</p>
+      <div class="t-author"><div class="t-avatar">TL</div><div><div class="t-name">Team Lead, IT</div><div class="t-title">PosShop Ltd · 2021</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FULL CV ═══════════ -->
+<div class="cv-sec" id="cv">
+  <div style="text-align:center;margin-bottom:2.5rem;">
+    <div class="sec-lbl" style="justify-content:center;"><span style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;">Full Resume</span></div>
+    <h2 class="sec-ttl" style="text-align:center;margin-bottom:0;">Curriculum Vitae</h2>
+  </div>
+  <div class="cv-wrap rv">
+    <div class="cv-bar">
+      <div class="cv-bar-dots"><div class="dot dr"></div><div class="dot dy"></div><div class="dot dg"></div></div>
+      <div class="cv-bar-title">Emmanuel_Tar_IT_CV — 2025</div>
+      <div class="cv-bar-btns">
+        <button class="cvb" onclick="window.print()">⎙ Print / Save PDF</button>
+        <a class="cvb" href="mailto:emmanueltar14@gmail.com?subject=Resume Request&body=Hi Emmanuel, I'd like to request your resume.">✉ Request Copy</a>
+      </div>
+    </div>
+    <div class="cv-body">
+      <div class="cv-name">EMMANUEL TAR</div>
+      <div class="cv-role">IT Support Officer · Software • Hardware • Networking • USB Devices</div>
+      <div class="cv-contacts">
+        <div class="cv-c">📍 Victoria Island, Lagos, Nigeria</div>
+        <div class="cv-c">📞 +234 807 912 6123</div>
+        <div class="cv-c">✉ emmanueltar14@gmail.com</div>
+        <div class="cv-c">💼 linkedin.com/in/emmanueltar</div>
+      </div>
+      <div class="cv-sh">Professional Summary</div>
+      <p class="cv-p">Technical Support Specialist with 3+ years of experience diagnosing and resolving complex full-stack software, hardware, USB, and network issues. Skilled in troubleshooting cross-platform environments (Windows &amp; macOS), analysing logs, resolving cloud/on-prem synchronisation problems, and supporting firmware workflows. Collaborative, analytical, and highly adaptable, with strong problem-solving skills and experience influencing product improvements through structured defect reporting.</p>
+      <div class="cv-sh">Core Competencies</div>
+      <div class="cv-tags"><span class="cv-tag">Full-Stack Troubleshooting</span><span class="cv-tag">USB Device Diagnostics</span><span class="cv-tag">Network Connectivity</span><span class="cv-tag">SQL (MySQL)</span><span class="cv-tag">Root Cause Analysis</span><span class="cv-tag">Incident &amp; Defect Management</span><span class="cv-tag">Windows / macOS</span><span class="cv-tag">Python (Foundational)</span><span class="cv-tag">JavaScript (Foundational)</span><span class="cv-tag">Firmware Updates</span><span class="cv-tag">Cloud Sync Analysis</span><span class="cv-tag">Logging &amp; Packet Reasoning</span><span class="cv-tag">Customer Ownership</span><span class="cv-tag">Technical Documentation</span></div>
+      <div class="cv-sh">Professional Experience</div>
+      <div class="cv-job">
+        <div class="cv-jh"><div><div class="cv-jt">Software Support Analyst</div><div class="cv-jc">Yanot Ltd</div></div><div class="cv-jd">Feb 2022 – Present</div></div>
+        <ul class="cv-ul">
+          <li>Act as primary point of contact for escalated software issues, troubleshooting full-stack problems across UI, application logic, APIs, and databases.</li>
+          <li>Resolve USB-connected hardware issues including device detection failures, driver conflicts, power delivery issues, and firmware compatibility.</li>
+          <li>Support end-to-end USB workflows: device provisioning, secure data extraction, firmware updates, and physical connection troubleshooting.</li>
+          <li>Troubleshoot network-connected device issues involving Wi-Fi/Ethernet, DHCP/IP conflicts, firewall restrictions, and bandwidth performance.</li>
+          <li>Diagnose cloud/on-prem synchronisation issues using logs, packet-level reasoning, and network diagnostic methods.</li>
+          <li>Collaborate with product and engineering teams, reporting bugs with detailed reproduction steps and contributing to product reliability.</li>
+          <li>Assist with software release cycles including validation, documentation, and deployment of updates.</li>
+          <li>Participate in RCPS/problem-management sessions to prevent recurring issues and improve long-term product stability.</li>
+          <li>Work alongside Account Managers and Customer Success to deliver a premium support experience for all users.</li>
+        </ul>
+      </div>
+      <div class="cv-job">
+        <div class="cv-jh"><div><div class="cv-jt">IT Support Analyst</div><div class="cv-jc">PosShop Ltd</div></div><div class="cv-jd">Feb 2020 – Jan 2022</div></div>
+        <ul class="cv-ul">
+          <li>Diagnosed hardware, software, and network issues across distributed environments.</li>
+          <li>Supported device provisioning, updates, and maintenance for POS systems.</li>
+          <li>Delivered clear, empathetic technical guidance to non-technical users.</li>
+          <li>Managed tickets with full ownership from intake to resolution.</li>
+          <li>Collaborated across IT, engineering, and operations teams to resolve recurring issues and improve system reliability.</li>
+        </ul>
+      </div>
+      <div class="cv-sh">Education</div>
+      <div class="cv-edu-row"><div><div class="cv-deg">B.Sc. Computer Science</div><div class="cv-sch">Kwame Nkrumah University of Science and Technology (KNUST), Ghana</div></div><div class="cv-ed">2013 – 2018</div></div>
+      <div class="cv-sh">Certifications</div>
+      <ul class="cv-ul"><li>CompTIA A+</li><li>ITIL Foundation (Incident &amp; Problem Management)</li><li>Google Advanced Data Analytics Certification</li><li>Cisco Data Science Certification</li></ul>
+      <div class="cv-sh">Technical Skills</div>
+      <div class="cv-st">
+        <div class="cv-sk">Programming</div><div class="cv-sv">Python (foundational), JavaScript (foundational)</div>
+        <div class="cv-sk">Databases</div><div class="cv-sv">MySQL, SQL queries (SELECT / UPDATE / DELETE / JOIN)</div>
+        <div class="cv-sk">Environments</div><div class="cv-sv">Windows, macOS</div>
+        <div class="cv-sk">Tools</div><div class="cv-sv">Jira, Zendesk, logging tools, admin consoles</div>
+        <div class="cv-sk">Networking</div><div class="cv-sv">DHCP, IP config, firewall rules, Wi-Fi/Ethernet troubleshooting</div>
+        <div class="cv-sk">Hardware</div><div class="cv-sv">USB diagnostics, firmware workflows, device provisioning</div>
+      </div>
+      <div class="cv-sh">Strengths &amp; Professional Attributes</div>
+      <ul class="cv-ul"><li>Strong structured problem-solving and analytical reasoning.</li><li>Clear communication and detailed documentation of complex issues.</li><li>Full ownership mindset — committed to resolving issues end-to-end.</li><li>Collaborative, working effectively with engineering, QA, product, and customer-facing teams.</li><li>Adaptable to fast-paced, evolving environments with continuous learning.</li></ul>
+      <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);text-align:center;"><p style="font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.1em;">REFERENCE · Available upon request</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CONTACT ═══════════ -->
+<section id="contact">
+  <div class="con-inner">
+    <div class="sec-lbl"><span style="font-family:'Space Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;">Contact</span></div>
+    <h2 class="sec-ttl" style="margin-bottom:1rem;">Let's Work Together</h2>
+    <p class="con-desc">I'm actively seeking roles at world-class engineering teams. If you're from Google, Meta, IBM, JP Morgan, Amazon, Microsoft — or any top-tier organisation — I'd love to connect.</p>
+    <div class="con-links">
+      <a href="mailto:emmanueltar14@gmail.com" class="con-link">✉ emmanueltar14@gmail.com</a>
+      <a class="con-link" style="cursor:pointer;" onclick="copyPhone()">📞 +234 807 912 6123 <span style="font-size:.55rem;opacity:.6;">(click to copy)</span></a>
+      <a href="https://www.linkedin.com/in/emmanueltar" target="_blank" class="con-link">💼 LinkedIn Profile</a>
+    </div>
+    <a href="mailto:emmanueltar14@gmail.com" class="btn btn-p" style="font-size:.75rem;padding:.85rem 2rem;">Send Me a Message →</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Emmanuel Tar — Technical Support Engineer</p>
+  <p>Victoria Island, Lagos, Nigeria 🇳🇬</p>
+  <a href="#" class="back-top">↑ Back to top</a>
+</footer>
+
+<script>
+/* ═══ CURSOR ═══ */
+const cd=document.getElementById('cd'),cr=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+document.addEventListener('mousedown',()=>cr.classList.add('clicking'));
+document.addEventListener('mouseup',()=>cr.classList.remove('clicking'));
+(function tick(){rx+=(mx-rx)*.16;ry+=(my-ry)*.16;
+  cd.style.left=mx+'px';cd.style.top=my+'px';
+  cr.style.left=rx+'px';cr.style.top=ry+'px';
+  requestAnimationFrame(tick);})();
+document.querySelectorAll('a,button,.emp-btn,.sk-card,.cert-card,.t-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>cr.classList.add('hover'));
+  el.addEventListener('mouseleave',()=>cr.classList.remove('hover'));
+});
+
+/* ═══ PROGRESS BAR ═══ */
+window.addEventListener('scroll',()=>{
+  document.getElementById('progress').style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+});
+
+/* ═══ REVEAL ON SCROLL ═══ */
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');if(e.target.id==='skillBars')animateBars();}});
+},{threshold:.08});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+
+/* ═══ ANIMATED COUNTERS ═══ */
+let countersRan=false;
+const statsObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting&&!countersRan){countersRan=true;runCounters();}});
+},{threshold:.3});
+const statsGrid=document.querySelector('.stats-grid');
+if(statsGrid)statsObs.observe(statsGrid);
+function runCounters(){
+  document.querySelectorAll('.sn[data-count]').forEach(el=>{
+    const target=+el.dataset.count;const suffix=el.nextElementSibling&&el.nextElementSibling.textContent.startsWith('%')?'':'';
+    const isPercent=el.parentElement.querySelector('.sl').textContent.includes('%');
+    let start=0;const dur=1500;const step=timestamp=>{
+      if(!start)start=timestamp;
+      const prog=Math.min((timestamp-start)/dur,1);
+      const ease=1-Math.pow(1-prog,3);
+      el.textContent=Math.floor(ease*target)+(isPercent?'':'');
+      if(prog<1)requestAnimationFrame(step);
+      else el.textContent=target+(isPercent?'':'');
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+/* ═══ SKILL BARS ═══ */
+let barsRan=false;
+function animateBars(){
+  if(barsRan)return;barsRan=true;
+  document.querySelectorAll('.sb-fill').forEach((bar,i)=>{
+    setTimeout(()=>{bar.style.width=bar.dataset.pct+'%';},i*80);
+  });
+}
+
+/* ═══ MATCH SCORE BARS ═══ */
+function animateMatch(card){
+  card.querySelectorAll('.match-bar-fill').forEach(bar=>{
+    setTimeout(()=>{bar.style.width=bar.dataset.width+'%';},300);
+  });
+  card.querySelectorAll('.match-pct').forEach(el=>{
+    const t=+el.dataset.target;let s=0;const dur=800;
+    const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/dur,1);const e=1-Math.pow(1-p,3);
+      el.textContent=Math.floor(e*t)+'%';if(p<1)requestAnimationFrame(step);else el.textContent=t+'%';};
+    requestAnimationFrame(step);
+  });
+}
+
+/* ═══ EMPLOYER TARGETING ═══ */
+function showEmp(e){
+  document.querySelectorAll('.emp-card').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.emp-btn').forEach(b=>b.classList.remove('on'));
+  const card=document.getElementById('ec-'+e);
+  card.classList.add('on');
+  document.querySelector('[data-e="'+e+'"]').classList.add('on');
+  animateMatch(card);
+}
+setTimeout(()=>showEmp('google'),600);
+
+/* ═══ TYPED TEXT ═══ */
+const phrases=['Technical Support Engineer.','Problem Solver. Root Cause Finder.','Turning bugs into product improvements.','Available for Google, Meta, IBM & more.'];
+let pi=0,ci=0,deleting=false;
+const typedEl=document.getElementById('typedText');
+function typeLoop(){
+  const phrase=phrases[pi];
+  if(!deleting){
+    typedEl.innerHTML=phrase.slice(0,ci)+'<span class="typed-cursor-el"></span>';
+    ci++;
+    if(ci>phrase.length){deleting=true;setTimeout(typeLoop,1800);return;}
+  }else{
+    typedEl.innerHTML=phrase.slice(0,ci)+'<span class="typed-cursor-el"></span>';
+    ci--;
+    if(ci<0){deleting=false;ci=0;pi=(pi+1)%phrases.length;}
+  }
+  setTimeout(typeLoop,deleting?40:65);
+}
+typeLoop();
+
+/* ═══ INTERACTIVE TERMINAL ═══ */
+const termCmds={
+  help:()=>`<span style="color:var(--accent2)">Available commands:</span><br>skills · experience · contact · certifications · hire · about · clear`,
+  skills:()=>`<span style="color:var(--accent)">Core Skills:</span><br>▸ Full-Stack Troubleshooting (95%)<br>▸ USB/Firmware/Hardware (90%)<br>▸ Network Diagnostics (88%)<br>▸ SQL/MySQL (78%)<br>▸ Incident Management (91%)`,
+  experience:()=>`<span style="color:var(--accent)">Experience:</span><br>▸ Yanot Ltd — Software Support Analyst (2022–Present)<br>▸ PosShop Ltd — IT Support Analyst (2020–2022)<br>▸ B.Sc CS, KNUST Ghana (2013–2018)`,
+  contact:()=>`<span style="color:var(--accent)">Contact Info:</span><br>✉ emmanueltar14@gmail.com<br>📞 +234 807 912 6123<br>💼 linkedin.com/in/emmanueltar`,
+  certifications:()=>`<span style="color:var(--accent)">Certifications:</span><br>▸ CompTIA A+<br>▸ Google Advanced Data Analytics<br>▸ ITIL Foundation<br>▸ Cisco Data Science`,
+  hire:()=>`<span style="color:var(--accent2)">✓ Great choice!</span><br>Email emmanueltar14@gmail.com<br>or connect on LinkedIn.<br>Available immediately.`,
+  about:()=>`Technical Support Engineer, 3+ years.<br>Based in Lagos, Nigeria 🇳🇬<br>Status: <span style="color:var(--accent2)">OPEN TO WORK</span>`,
+  clear:()=>{document.getElementById('termOutput').innerHTML='';return null;}
+};
+document.getElementById('termInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    const cmd=e.target.value.trim().toLowerCase();
+    e.target.value='';
+    const out=document.getElementById('termOutput');
+    const fn=termCmds[cmd];
+    const result=fn?fn():cmd?`<span style="color:var(--accent3)">Command not found: ${cmd}. Try 'help'</span>`:null;
+    if(result!==null){out.innerHTML=(out.innerHTML?out.innerHTML+'<br>':'')+`<span style="color:var(--muted)">$ ${cmd}</span><br>${result}`;}
+    out.scrollTop=out.scrollHeight;
+  }
+});
+
+/* ═══ PARTICLES ═══ */
+(function(){
+  const canvas=document.getElementById('particles-canvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  let W,H,particles=[];
+  function resize(){W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight;}
+  resize();window.addEventListener('resize',()=>{resize();init();});
+  function init(){
+    particles=[];
+    const count=Math.floor(W*H/18000);
+    for(let i=0;i<count;i++)particles.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.2+.3,o:Math.random()*.5+.1});
+  }
+  init();
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<particles.length;i++){
+      const p=particles[i];
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;
+      if(p.y<0||p.y>H)p.vy*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(0,229,255,${p.o})`;ctx.fill();
+      for(let j=i+1;j<particles.length;j++){
+        const q=particles[j];const dx=p.x-q.x;const dy=p.y-q.y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<100){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle=`rgba(0,229,255,${.08*(1-dist/100)})`;ctx.lineWidth=.5;ctx.stroke();}
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ═══ DARK/LIGHT THEME ═══ */
+const themeBtn=document.getElementById('themeBtn');
+let dark=true;
+themeBtn.addEventListener('click',()=>{
+  dark=!dark;
+  document.documentElement.setAttribute('data-theme',dark?'':'light');
+  themeBtn.textContent=dark?'🌙':'☀️';
+});
+
+/* ═══ COPY TO CLIPBOARD ═══ */
+function copyPhone(){
+  navigator.clipboard.writeText('+2348079126123').then(()=>{
+    const t=document.getElementById('copyToast');
+    t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
+  });
+}
+</script>
+</body>
+</html>
